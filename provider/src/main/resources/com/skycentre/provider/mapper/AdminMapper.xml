@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.skycentre.provider.dao.AdminDao">
+	<resultMap id="BaseResultMap" type="com.skycentre.provider.entity.Admin">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="role_id" property="roleId" jdbcType="INTEGER" />
+		<result column="username" property="username" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<result column="role_name" property="roleName" jdbcType="VARCHAR" />
+		<result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, role_id, username, password, create_date
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from admin
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<select id="getList" resultMap="BaseResultMap">
+		SELECT a.id,b.role_name,a.username,a.create_date FROM admin AS a
+		LEFT JOIN role AS b ON a.role_id=b.id
+	</select>
+	<select id="login" resultMap="BaseResultMap"
+		parameterType="com.skycentre.provider.entity.Admin">
+		select
+		<include refid="Base_Column_List" />
+		from admin
+		where username = #{username,jdbcType=VARCHAR}
+		and password = #{password,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from admin
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.skycentre.provider.entity.Admin">
+		insert into admin (id, role_id, username,
+		password, create_date)
+		values (#{id,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER},
+		#{username,jdbcType=VARCHAR},
+		#{password,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="com.skycentre.provider.entity.Admin">
+		insert into admin
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="roleId != null">
+				role_id,
+			</if>
+			<if test="username != null">
+				username,
+			</if>
+			<if test="password != null">
+				password,
+			</if>
+			<if test="createDate != null">
+				create_date,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="roleId != null">
+				#{roleId,jdbcType=INTEGER},
+			</if>
+			<if test="username != null">
+				#{username,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				#{password,jdbcType=VARCHAR},
+			</if>
+			<if test="createDate != null">
+				#{createDate,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.skycentre.provider.entity.Admin">
+		update admin
+		<set>
+			<if test="roleId != null">
+				role_id = #{roleId,jdbcType=INTEGER},
+			</if>
+			<if test="username != null">
+				username = #{username,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				password = #{password,jdbcType=VARCHAR},
+			</if>
+			<if test="createDate != null">
+				create_date = #{createDate,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.skycentre.provider.entity.Admin">
+		update admin
+		set role_id = #{roleId,jdbcType=INTEGER},
+		username = #{username,jdbcType=VARCHAR},
+		password = #{password,jdbcType=VARCHAR},
+		create_date = #{createDate,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+</mapper>

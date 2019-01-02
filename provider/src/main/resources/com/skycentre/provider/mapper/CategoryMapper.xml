@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.skycentre.provider.dao.CategoryDao">
+	<resultMap id="BaseResultMap" type="com.skycentre.provider.entity.Category">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="category_name" jdbcType="VARCHAR" property="categoryName" />
+		<result column="status" property="status" jdbcType="INTEGER" />
+		<result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, category_name, status, create_date
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from category
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<select id="getList" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from category
+	</select>
+	<select id="search" resultMap="BaseResultMap" parameterType="com.skycentre.provider.entity.Category">
+		select
+		<include refid="Base_Column_List" />
+		from category
+		where status = #{status,jdbcType=INTEGER}
+		<if test="categoryName != ''">
+			and category_name like "%"#{categoryName,jdbcType=VARCHAR}"%"
+		</if>
+		<if test="beginDate != '' and endDate != ''">
+		    and a.create_date between #{beginDate,jdbcType=VARCHAR} and #{endDate,jdbcType=VARCHAR}
+		</if>
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from category
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.skycentre.provider.entity.Category">
+		insert into category (id, category_name, status)
+		values (#{id,jdbcType=INTEGER}, #{categoryName,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER})
+	</insert>
+	<insert id="insertSelective" parameterType="com.skycentre.provider.entity.Category">
+		insert into category
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="categoryName != null">
+				category_name,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="categoryName != null">
+				#{categoryName,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.skycentre.provider.entity.Category">
+		update category
+		<set>
+			<if test="categoryName != null">
+				category_name = #{categoryName,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.skycentre.provider.entity.Category">
+		update category
+		set category_name = #{categoryName,jdbcType=VARCHAR}, status = #{status,jdbcType=INTEGER}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+</mapper>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.skycentre.provider.dao.MenuDao">
+	<resultMap id="BaseResultMap" type="com.skycentre.provider.entity.Menu">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="father_id" property="fatherId" jdbcType="INTEGER" />
+		<result column="menu_code" property="menuCode" jdbcType="INTEGER" />
+		<result column="menu_name" property="menuName" jdbcType="VARCHAR" />
+		<result column="link_url" property="linkUrl" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, father_id, menu_code, menu_name, link_url
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from menu
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	
+	<!-- 获取所有数据 -->
+	<select id="getList" resultMap="BaseResultMap">
+		select
+		id, father_id as _parentId, menu_code, menu_name, link_url
+		from menu
+	</select>
+	
+	<select id="getMenuList" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from menu
+	</select>
+	
+	<select id="getNewestMenu" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from menu
+		where father_id = #{menuCode,jdbcType=INTEGER} order by menu_code desc limit 1
+	</select>
+	
+	<!-- 获取顶层菜单 -->
+	<select id="getTopMenu" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		SELECT father_id,menu_code,menu_name,link_url FROM menu WHERE menu_code IN (
+			SELECT SUBSTRING(menu_code,1,4) AS menu_code FROM role_right AS a 
+			WHERE role_id=#{roleId,jdbcType=INTEGER} AND menu_code!=10 GROUP BY SUBSTR(menu_code,1,4)
+		)
+	</select>
+
+	<!-- 获取下级菜单 -->
+	<select id="getMenuByFatherId" resultMap="BaseResultMap" parameterType="java.util.Map">
+		SELECT r.id,r.role_id,r.menu_code,m.menu_name,m.link_url FROM role_right AS r
+		LEFT JOIN menu AS m ON r.menu_code=m.menu_code
+		WHERE r.role_id=#{roleId,jdbcType=INTEGER} AND m.father_id=#{fatherId,jdbcType=INTEGER}
+	</select>
+	
+	<!-- 通过角色ID获取菜单 -->
+	<select id="getMenuTreeByRoleId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		SELECT m.id,m.father_id as _parentId,m.menu_code,m.menu_name,m.link_url,IF(ISNULL(r.menu_code),'no','yes') AS 'right' FROM menu AS m
+		LEFT JOIN role_right AS r ON m.menu_code = r.menu_code
+		AND r.role_id=#{roleId,jdbcType=INTEGER} AND LENGTH(r.menu_code)>=4
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from menu
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.skycentre.provider.entity.Menu">
+		insert into menu (id,
+		father_id, menu_code,
+		menu_name, link_url)
+		values
+		(#{id,jdbcType=INTEGER}, #{fatherId,jdbcType=INTEGER},
+		#{menuCode,jdbcType=INTEGER},
+		#{menuName,jdbcType=VARCHAR},
+		#{linkUrl,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.skycentre.provider.entity.Menu">
+		insert into menu
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="fatherId != null">
+				father_id,
+			</if>
+			<if test="menuCode != null">
+				menu_code,
+			</if>
+			<if test="menuName != null">
+				menu_name,
+			</if>
+			<if test="linkUrl != null">
+				link_url,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="fatherId != null">
+				#{fatherId,jdbcType=INTEGER},
+			</if>
+			<if test="menuCode != null">
+				#{menuCode,jdbcType=INTEGER},
+			</if>
+			<if test="menuName != null">
+				#{menuName,jdbcType=VARCHAR},
+			</if>
+			<if test="linkUrl != null">
+				#{linkUrl,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.skycentre.provider.entity.Menu">
+		update menu
+		<set>
+			<if test="fatherId != null">
+				father_id = #{fatherId,jdbcType=INTEGER},
+			</if>
+			<if test="menuCode != null">
+				menu_code = #{menuCode,jdbcType=INTEGER},
+			</if>
+			<if test="menuName != null">
+				menu_name = #{menuName,jdbcType=VARCHAR},
+			</if>
+			<if test="linkUrl != null">
+				link_url = #{linkUrl,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.skycentre.provider.entity.Menu">
+		update menu
+		set
+		father_id = #{fatherId,jdbcType=INTEGER},
+		menu_code =
+		#{menuCode,jdbcType=INTEGER},
+		menu_name = #{menuName,jdbcType=VARCHAR},
+		link_url = #{linkUrl,jdbcType=VARCHAR}
+		where id =
+		#{id,jdbcType=INTEGER}
+	</update>
+</mapper>

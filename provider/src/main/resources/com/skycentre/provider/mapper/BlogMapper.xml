@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.skycentre.provider.dao.BlogDao">
+	<resultMap id="BaseResultMap" type="com.skycentre.provider.entity.Blog">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="category_id" jdbcType="INTEGER" property="categoryId" />
+		<result column="category_name" jdbcType="INTEGER" property="categoryName" />
+		<result column="title" jdbcType="VARCHAR" property="title" />
+		<result column="comment_total" jdbcType="INTEGER" property="commentTotal" />
+		<result column="ip_address" jdbcType="VARCHAR" property="ipAddress" />
+		<result column="status" jdbcType="INTEGER" property="status" />
+		<result column="create_Date" jdbcType="BIGINT" property="createDate" />
+	</resultMap>
+	<resultMap extends="BaseResultMap" id="ResultMapWithBLOBs"
+		type="com.skycentre.provider.entity.Blog">
+		<result column="content" jdbcType="LONGVARCHAR" property="content" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, category_id, title, comment_total, ip_address, status, create_date
+	</sql>
+	<sql id="Blob_Column_List">
+		content
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="ResultMapWithBLOBs">
+		select
+		<include refid="Base_Column_List" />
+		,
+		<include refid="Blob_Column_List" />
+		from blog
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	
+	<!-- 上一篇,下一篇 -->
+	<select id="getBlogToNext" resultMap="ResultMapWithBLOBs" parameterType="map">
+	    select
+		<include refid="Base_Column_List" />
+		from blog
+		<if test="type == 1">
+		where create_date &gt; #{createDate} order by create_date ASC
+		</if>
+		<if test="type == 2">
+		where create_date &lt; #{createDate} order by create_date DESC    
+		</if>
+		limit 0,1
+	</select>
+	
+	<select id="getList" resultMap="ResultMapWithBLOBs" parameterType="map">
+		SELECT
+		a.id,a.category_id,b.category_name,a.title,a.content,a.comment_total,a.ip_address,a.status,a.create_date
+		FROM blog AS a
+		LEFT JOIN category AS b ON a.category_id=b.id
+		where a.status = 0
+		ORDER BY a.create_date DESC limit #{offset,jdbcType=INTEGER}, #{limit,jdbcType=INTEGER}
+	</select>
+	<select id="getListByCategory" resultMap="ResultMapWithBLOBs" parameterType="map">
+		SELECT
+		a.id,b.category_name,a.title,a.content,a.comment_total,a.ip_address,a.status,a.create_date
+		FROM blog AS a
+		LEFT JOIN category AS b ON a.category_id=b.id
+		where a.status = 0 and b.id = #{categoryId,jdbcType=INTEGER}
+		ORDER BY a.create_date DESC limit #{offset,jdbcType=INTEGER}, #{limit,jdbcType=INTEGER}
+	</select>
+	<select id="getCount" resultType="java.lang.Integer">
+		select
+		count(*) as total
+		from blog
+		where status = 0
+	</select>
+	<select id="getCountByCategory" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		select
+		count(*) as total
+		from blog
+		where status = 0 and category_id = #{categoryId,jdbcType=INTEGER}
+	</select>
+	<select id="search" resultMap="ResultMapWithBLOBs" parameterType="com.skycentre.provider.entity.Blog">
+		SELECT
+		a.id,b.category_name,a.title,a.comment_total,a.ip_address,a.status,a.create_date
+		FROM blog AS a
+		LEFT JOIN category AS b ON a.category_id=b.id
+		where a.status = #{status,jdbcType=INTEGER} 
+		<if test="title != ''">
+			and a.title like "%"#{title,jdbcType=VARCHAR}"%" 
+		</if>
+		<if test="beginDate != '' and endDate != ''">
+		    and a.create_date between #{beginDate,jdbcType=VARCHAR} and #{endDate,jdbcType=VARCHAR}
+		</if>
+		ORDER BY a.create_date DESC
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from blog
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.skycentre.provider.entity.Blog">
+		insert into blog (id,
+		category_id, title,
+		comment_total, ip_address, create_date,
+		content, status)
+		values (#{id,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER},
+		#{title,jdbcType=VARCHAR},
+		#{commentTotal,jdbcType=INTEGER},
+		#{ipAddress,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP},
+		#{content,jdbcType=LONGVARCHAR},
+		#{status,jdbcType=INTEGER}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.skycentre.provider.entity.Blog">
+		insert into blog
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="categoryId != null">
+				category_id,
+			</if>
+			<if test="title != null">
+				title,
+			</if>
+			<if test="commentTotal != null">
+				comment_total,
+			</if>
+			<if test="ipAddress != null">
+				ip_address,
+			</if>
+			<if test="createDate != null">
+				create_date,
+			</if>
+			<if test="content != null">
+				content,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="categoryId != null">
+				#{categoryId,jdbcType=INTEGER},
+			</if>
+			<if test="title != null">
+				#{title,jdbcType=VARCHAR},
+			</if>
+			<if test="commentTotal != null">
+				#{commentTotal,jdbcType=INTEGER},
+			</if>
+			<if test="ipAddress != null">
+				#{ipAddress,jdbcType=VARCHAR},
+			</if>
+			<if test="createDate != null">
+				#{createDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="content != null">
+				#{content,jdbcType=LONGVARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.skycentre.provider.entity.Blog">
+		update blog
+		<set>
+			<if test="categoryId != null">
+				category_id = #{categoryId,jdbcType=INTEGER},
+			</if>
+			<if test="title != null">
+				title = #{title,jdbcType=VARCHAR},
+			</if>
+			<if test="commentTotal != null">
+				comment_total = #{commentTotal,jdbcType=INTEGER},
+			</if>
+			<if test="ipAddress != null">
+				ip_address = #{ipAddress,jdbcType=VARCHAR},
+			</if>
+			<if test="createDate != null">
+				create_date = #{createDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="content != null">
+				content = #{content,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKeyWithBLOBs" parameterType="com.skycentre.provider.entity.Blog">
+		update
+		blog
+		set category_id = #{categoryId,jdbcType=INTEGER},
+		title =
+		#{title,jdbcType=VARCHAR},
+		comment_total =
+		#{commentTotal,jdbcType=INTEGER},
+		ip_address =
+		#{ipAddress,jdbcType=VARCHAR},
+		create_date =
+		#{createDate,jdbcType=TIMESTAMP},
+		content =
+		#{content,jdbcType=LONGVARCHAR}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.skycentre.provider.entity.Blog">
+		update blog
+		set
+		category_id = #{categoryId,jdbcType=INTEGER},
+		title =
+		#{title,jdbcType=VARCHAR},
+		comment_total =
+		#{commentTotal,jdbcType=INTEGER},
+		ip_address =
+		#{ipAddress,jdbcType=VARCHAR},
+		create_date =
+		#{createDate,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	
+	<select id="getNewestBlogs" resultMap="ResultMapWithBLOBs">
+		SELECT id,title,create_date FROM blog 
+		WHERE STATUS=0 
+		ORDER BY create_date DESC LIMIT 0,5
+	</select>
+	
+	<select id="getYears" resultMap="ResultMapWithBLOBs">
+		SELECT DATE_FORMAT(FROM_UNIXTIME(create_date/1000),'%Y') AS YEAR,
+		COUNT(id) AS total 
+		FROM blog 
+		GROUP BY DATE_FORMAT(FROM_UNIXTIME(create_date/1000),'%Y')
+		ORDER BY create_date DESC
+	</select>
+	
+	<select id="getBlogsByYear" resultMap="ResultMapWithBLOBs" resultType="java.lang.Integer">
+		SELECT id,title,content,create_date FROM blog 
+		WHERE STATUS = 0 
+		AND DATE_FORMAT(FROM_UNIXTIME(create_date/1000),'%Y')
+		=DATE_FORMAT(FROM_UNIXTIME( #{year,jdbcType=INTEGER} ),'%Y')
+		ORDER BY create_date DESC
+		limit #{offset,jdbcType=INTEGER}, #{limit,jdbcType=INTEGER}
+	</select>
+	
+	<select id="getCountByYear" resultType="java.lang.Integer">
+		select
+		count(*) as total
+		from blog
+		WHERE STATUS=0 
+		AND DATE_FORMAT(FROM_UNIXTIME(create_date/1000),'%Y')=DATE_FORMAT(FROM_UNIXTIME( #{year,jdbcType=INTEGER} ),'%Y')
+	</select>
+</mapper>
