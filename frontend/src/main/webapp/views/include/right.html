@@ -1,0 +1,63 @@
+<aside id="secondary" class="widget-area" role="complementary">
+	<section id="search-2" class="widget widget_search">
+
+		<form role="search" method="post" class="search-form"
+			action="${contextPath}/blog/search">
+			<label for="search-form-592543cd20fe4"> <span
+				class="screen-reader-text">搜索：</span>
+			</label> <input type="search" id="keyword" class="search-field"
+				placeholder="搜索…" value="" name="keyword" />
+			<button type="submit" class="search-submit">
+				<svg class="icon icon-search" aria-hidden="true" role="img"> <use
+						href="#icon-search" xlink:href="#icon-search"></use> </svg>
+				<span class="screen-reader-text">搜索</span>
+			</button>
+		</form>
+	</section>
+	<section id="categories-2" class="widget widget_categories">
+		<h2 class="widget-title">分类目录</h2>
+		<ul>
+			<#list categories as category>
+			<li class="cat-item cat-item-3"><a
+				href="${contextPath}/category/list/${category.id}">${category.categoryName}</a></li>
+			</#list>
+		</ul>
+	</section>
+	<section id="recent-posts-2" class="widget widget_recent_entries">
+		<h2 class="widget-title">近期文章</h2>
+		<ul>
+			<#list newestBlogs as newestBlog>
+			<li>
+				<a href="${contextPath}/blog/detail/${newestBlog.id}">
+					${newestBlog.title} ${newestBlog.createDate?number?number_to_datetime?string('yyyy-MM-dd')}
+				</a>
+			</li>
+			</#list>
+		</ul>
+	</section>
+	<section id="recent-comments-2" class="widget widget_recent_comments">
+		<h2 class="widget-title">近期评论</h2>
+		<ul id="recentcomments">
+			<#list newestReplies as newestReply>
+			<li>
+				<a href="${contextPath}/blog/detail/${newestReply.blogId}">
+					${newestReply.createDate?number?number_to_datetime?string('yyyy-MM-dd')}: ${newestReply.content} by${newestReply.author}
+				</a>
+			</li>
+			</#list>
+		</ul>
+	</section>
+	<section id="archives-2" class="widget widget_archive">
+		<h2 class="widget-title">文章归档</h2>
+		<ul>
+			<#list years as year>
+			<li>
+				<a href='${contextPath}/blog/list/${year.year}'>
+					${year.year}年 (${year.total}篇)
+				</a>
+			</li>
+			</#list>
+		</ul>
+	</section>
+	
+</aside>

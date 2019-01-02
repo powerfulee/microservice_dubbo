@@ -1,0 +1,108 @@
+<#-- 自定义的分页指令 (powered by Qns)
+    属性：
+   formID				要分页的form表单id
+   pageInfo.pageNum		当前页号(int类型)
+   pageInfo.total		总记录数(int类型)
+   pageInfo.pages		总页数(int类型)
+ -->
+
+<#macro pagination formID>
+	<#if pageInfo.total==0><#return/></#if>
+ 
+	<#-- 输出分页样式 -->
+	<style type="text/css">
+		.pagination {padding: 5px;float:center;font-size:12px;}
+		.pagination a, .pagination a:link, .pagination a:visited {
+    padding: 7px 10px;
+    margin: 2px;
+    text-decoration: none;
+    color: #222;
+}
+		.pagination a:hover, .pagination a:active {border: 0px solid #ff0000;color: #000;text-decoration: none;}
+		.pagination span.current {
+    padding: 2px 5px;
+    margin: 2px;
+    color: #767676;
+    display: inline-block;
+}
+		.pagination span.disabled {
+    padding: 7px 10px;
+    margin: 2px;
+    border: 0px solid #eee;
+    color: #767676;
+}
+	</style>
+	
+	<#-- 页号越界处理 -->
+	<#assign pageNo=pageInfo.pageNum>
+	<#if (pageInfo.pageNum > pageInfo.pages)>
+    	<#assign pageNo=pageInfo.pages>
+  	</#if>
+  	<#if (pageInfo.pageNum < 1)>
+    	<#assign pageNo=1>
+  	</#if>
+  	
+	<#-- 输出分页表单 -->
+	<div class="pagination">
+		<form id="paginationForm" name="paginationForm" method="post" action="">
+			<#-- 把请求中的所有参数当作隐藏表单域(无法解决一个参数对应多个值的情况) -->
+			<#list RequestParameters?keys as key>
+				<#if (key!="page" && RequestParameters[key]??)>
+					<input type="hidden" name="${key}" value="${RequestParameters[key]}"/>
+				</#if>
+			</#list>
+			<input type="hidden" id="page" name="page" value="${pageNo}"/>
+			<#-- 上一页处理 -->
+			<#if (pageNo == 1)>
+				<span class="disabled">&laquo;&nbsp;上一页</span>
+			<#else>
+				<a href="javascript:turnOverPage(${pageNo - 1})">&laquo;&nbsp;上一页</a>
+			</#if>
+			<#-- 如果前面页数过多,显示... -->
+			<#assign start=1>
+			<#if (pageNo > 4)>
+				<#assign start=(pageNo - 1)>
+				<a href="javascript:turnOverPage(1)">1</a>
+				<a href="javascript:turnOverPage(2)">2</a>&hellip;
+			</#if>
+			<#-- 显示当前页号和它附近的页号 -->
+			<#assign end=(pageNo + 1)>
+			<#if (end > pageInfo.pages)>
+				<#assign end=pageInfo.pages>
+			</#if>
+			<#list start..end as i>
+				<#if (pageNo==i)>
+					<span class="current">${i}</span>
+				<#else>
+					<a href="javascript:turnOverPage(${i})">${i}</a>      
+				</#if>
+			</#list>
+			<#-- 如果后面页数过多,显示... -->
+			<#if (end < pageInfo.pages - 2)>
+				&hellip;  
+			</#if>
+			<#if (end < pageInfo.pages - 1)>
+				<a href="javascript:turnOverPage(${pageInfo.pages - 1})">${pageInfo.pages-1}</a>
+			</#if>
+			<#if (end < pageInfo.pages)>
+				<a href="javascript:turnOverPage(${pageInfo.pages})">${pageInfo.pages}</a>
+			</#if>
+			<#-- 下一页处理 -->
+			<#if (pageNo == pageInfo.pages)>
+				<span class="disabled">下一页&nbsp;&raquo;</span>
+			<#else>
+				<a href="javascript:turnOverPage(${pageNo + 1})">下一页&nbsp;&raquo;</a>
+			</#if>
+		</form>
+		<script language="javascript">
+		function turnOverPage(pageNo){
+		    var pForm=document.getElementById('paginationForm');
+		    if(pageNo>${pageInfo.pages}){pageNo=${pageInfo.pages};}
+		    if(pageNo<1){pageNo=1;}
+		    pForm.page.value=pageNo;
+		   	pForm.action=document.getElementById('${formID}').action;
+		    pForm.submit();
+		  }
+		</script>
+	</div>
+</#macro>
