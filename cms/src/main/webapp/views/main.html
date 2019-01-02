@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+* {
+	font-size: 12px;
+	font-family: 'Microsoft YaHei';
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	padding: 10px;
+	color: #000;
+}
+
+#navi {
+	margin-top: 20px;
+	padding-top: 20px;
+	border-top: 1px solid #ccc;
+}
+
+#navi div {
+	border: 1px solid #aaa;
+	margin-bottom: 20px;
+	padding: 10px;
+	line-height: 25px;
+	width: 500px;
+}
+
+#navi div a {
+	cursor: pointer;
+	margin-right: 10px;
+}
+
+#navi div a:hover {
+	color: #09f;
+	text-decoration: underline;
+}
+
+.navi_one {
+	color: #333;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	font-size: 13px;
+	font-weight: bold;
+	cursor: pointer;
+	display: block;
+	width: 100px;
+	text-align: center;
+	padding: 5px 0;
+	background: #f1f1f1 url("public/images/filter.png') 0
+		-95px repeat-x;
+	border: 1px solid #aaa;
+	border-bottom: none;
+}
+
+.navi_one:hover {
+	color: #039;
+}
+</style>
+</head>
+<body>
+	<div id="welcome">
+		欢迎“ <font color="red">${truename}</font>”登录本系统！您的登录时间:
+		${loginTime}
+	</div>
+		<#list menus as menu>
+			<div id="navi">
+				<a onclick="javascript:goExpandLevelOne('');" class="navi_one">${menu.menuName}</a>
+				<div>
+					<#list menu.secondMenu as sMenu>
+						<a onclick="javascript:goToLevelThreeURL('${sMenu.linkUrl}','');" class="navi_two">
+						${sMenu.menuName}
+						</a>
+					</#list>
+				</div>
+
+			</div>
+		</#list>
+</body>
+</html>

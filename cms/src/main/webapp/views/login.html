@@ -1,0 +1,334 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Insert title here</title>
+<style type="text/css">
+{
+font-family
+
+
+
+
+
+
+
+
+
+
+:
+
+
+
+
+
+ 
+
+
+
+
+
+'
+Microsoft
+
+
+
+
+
+ 
+
+
+
+
+
+YaHei
+
+
+
+
+
+
+
+
+
+
+';
+font-size
+
+
+
+
+
+
+
+
+
+
+:
+
+
+
+
+
+ 
+
+
+
+
+
+14
+px
+
+
+
+
+
+
+
+
+
+
+;
+margin
+
+
+
+
+
+
+
+
+
+
+:
+
+
+
+
+
+ 
+
+
+
+
+
+0;
+padding
+
+
+
+
+
+
+
+
+
+
+:
+
+
+
+
+
+ 
+
+
+
+
+
+0;
+-webkit-tap-highlight-color
+
+
+
+
+
+
+
+
+
+
+:
+
+
+
+
+
+ 
+
+
+
+
+
+rgba
+
+
+
+
+
+
+
+
+
+
+(0
+,
+0,
+0,
+0);
+}
+body {
+	background: #173b84 url("public/images/login/bg.png") center;
+	text-align: center;
+}
+
+form {
+	display: block;
+	height: 100%;
+	margin: 0 auto;
+	text-align: left;
+	width: 400px;
+}
+
+#main_form {
+	background: none repeat scroll 0 0 #5177bf;
+	padding-bottom: 30px;
+	padding-left: 50px;
+	padding-top: 20px;
+}
+
+.main_name {
+	color: #ffffff;
+	font-family: "microsoft yahei", "宋体", Tahoma, Verdana, Arial, Helvetica,
+		sans-serif;
+	font-size: 30px;
+	margin-top: 250px;
+	padding-bottom: 20px;
+	padding-left: 65px;
+}
+
+.this_name, .this_pass, .this_validatecode {
+	width: 300px;
+	height: 56px;
+	margin: 5px 0;
+}
+
+.this_name {
+	background: url("public/images/login/name_input.png");
+}
+
+.this_pass {
+	background: url("public/images/login/pass_input.png");
+}
+
+.this_validatecode {
+	background-attachment: scroll;
+	background-color: rgba;
+	background-image: url(public/images/login/validatecode.png);
+	background-repeat: no-repeat;
+}
+
+.this_validatecode input {
+	border: medium none;
+	color: #666;
+	font-size: 16px;
+	height: 42px;
+	line-height: 42px;
+	margin: 5px 67px 0px 50px;
+	outline: medium none;
+	width: 50px;
+}
+
+.this_name input, .this_pass input {
+	border: none;
+	width: 200px;
+	height: 42px;
+	line-height: 42px;
+	margin: 5px 0 0 50px;
+	font-size: 20px;
+	color: #666;
+	outline: none;
+}
+
+.submit_btn {
+	outline: none;
+	border: none;
+	background: #fff url("public/images/login/submit_btn.png");
+	display: block;
+	height: 50px;
+	width: 300px;
+	margin-top: 20px;
+	cursor: pointer;
+}
+
+.submit_btn:hover {
+	background: #fff url("public/images/login/submit_btn.png") 0 -50px;
+}
+</style>
+<script src="public/js/jquery.min.js"></script>
+<script type="text/javascript">
+	function login() {
+		var username = $("#username").val();
+		var password = $("#password").val();
+		var validateCode = $("#validateCode").val();
+
+		url = "admin/signin";
+
+		$.ajax({
+			type : "post",
+			url : url,
+			data : {
+				username : username,
+				password : password,
+				validateCode : validateCode
+			},
+			dataType : "json",
+			success : function(json) {
+				var status = json.status;
+				var message = json.message;
+				var result = json.result;
+				
+				if (status == 0) {
+					window.location.href = "index";
+				} else {
+					alert(message);
+				}
+				
+			},
+			error : function() {
+				alert("系统异常，请稍后重试！");
+			}
+		});
+	}
+
+	function changeCode() { //刷新
+		$('#kaptchaImage').hide().attr(
+				'src',
+				'captcha-image?'
+						+ Math.floor(Math.random() * 100)).fadeIn();
+	}
+</script>
+</head>
+<body>
+	<form styleId="mainForm" id="form1" name="form1">
+		<div class="main_name">CMS管理系统</div>
+		<div id="main_form">
+			<div class="this_name">
+				<input name="username" id="username" type="text" maxlength="20"
+					placeholder="帐号" />
+			</div>
+			<div class="this_pass">
+				<input name="password" id="password" type="password" maxlength="20"
+					placeholder="密码" />
+			</div>
+			<div class="this_validatecode">
+				<input name="validateCode" id="validateCode" type="text"
+					maxlength="4" placeholder="验证码" /> <img src="captcha-image"
+					id="kaptchaImage" style="margin-bottom: -18px"
+					onclick="changeCode()" />
+			</div>
+			<a class="submit_btn" name="imageField" onclick="login();"></a>
+		</div>
+	</form>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Insert title here</title>
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta HTTP-EQUIV="expires" CONTENT="0">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style type="text/css">
+body {
+	margin: 0;
+	padding: 0;
+	font-size: 12px;
+	background: #ededed;
+	border-left: 1px solid #777;
+	border-right: 1px dashed #777;
+	height: 100%;
+}
+
+a {
+	color: black;
+	text-decoration: none;
+	font-family: "Microsoft YaHei";
+}
+
+a:hover {
+	color: #30f;
+	text-decoration: underline;
+}
+
+a:active {
+	color: #000;
+	cursor: pointer;
+}
+
+#itemsLayer {
+	width: 100%;
+}
+
+.titlestyle {
+	color: #444;
+	cursor: pointer;
+}
+
+.contentstyle {
+	background: #fff;
+	border-bottom: 1px solid #ccc;
+}
+
+.item_one {
+	position: relative;
+	left: 0;
+	width: 165px;
+}
+
+.item_one a {
+	display: block;
+	height: 30px;
+	line-height: 30px;
+	padding-left: 10px;
+	font-size: 14px;
+	background: #fff url('public/images/filter.png') 0
+		-95px;
+	border-bottom: 1px solid #ccc;
+}
+
+.item_one a:hover {
+	color: #000;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+.item_two {
+	position: relative;
+	left: 0;
+	width: 165px;
+	display: none;
+	line-height: 30px;
+}
+
+.item_two a {
+	padding-left: 10px;
+	display: block;
+	color: #666;
+}
+
+.item_two a:hover {
+	background: #f1f1f1;
+	text-decoration: none;
+	color: #000;
+	font-style: italic;
+}
+</style>
+</head>
+<body onLoad="switchdisplay('0')">
+	<span id="itemsLayer"> <script language="JavaScript">		 
+	var layerTop=1;       //菜单顶边距
+		 var layerLeft=1;      //菜单左边距
+		 var layerWidth=165;    //菜单总宽
+		 var titleHeight=30;    //标题栏高度
+		 var contentHeight=230; //内容区高度
+		 var stepNo=10;         //移动步数，数值越大移动越慢
+		 var itemNo=0;
+		 var runtimes=0;
+		 itemNo=1;
+		 var toItemIndex=itemNo-1;
+		 var onItemIndex=itemNo-1;
+		
+		function switchdisplay(idx){
+		     for(i=0;i<itemNo;i++)
+		        eval('document.all.itemc'+i+'.style.display ="none";')
+		        eval('if(document.all.itemc'+idx+'.style.display == "block") document.all.itemc'+idx+'.style.display ="none"; else document.all.itemc'+idx+'.style.display ="block";');
+		}
+		</script> <#list menus as menu>
+		<div id="item${menu_index}" itemindex="${menu_index}" class="item_one">
+			<a href="javascript:;" onclick="switchdisplay(${menu_index})"
+				class="titleStyle"> ${menu.menuName} </a>
+		</div>
+
+		<div id="itemc${menu_index}" itemindex="0" class="item_two">
+			<div class="contentStyle">
+				<#list menu.secondMenu as sMenu> <a
+					href="${sMenu.linkUrl}"
+				target="main">${sMenu_index+1}.
+				${sMenu.menuName} </a> </#list>
+			</div>
+		</div>
+		</#list>
+	</span>
+</body>
+</html>

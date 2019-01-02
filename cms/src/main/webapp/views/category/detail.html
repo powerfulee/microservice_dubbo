@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="../public/css/common.css">
+<script type="text/javascript" src="../public/js/jquery.min.js"></script>
+<script type="text/javascript">
+	function add() {
+		var id = $("#id").val();
+		var categoryName = $("#categoryName").val();
+		var status = $("#status").val();
+
+		url = "put";
+
+		$.ajax({
+			type : "post",
+			url : url,
+			data : {
+				id : id,
+				categoryName : categoryName,
+				status : status
+			},
+			dataType : "json",
+			success : function(json) {
+				var status = json.status;
+				var message = json.message;
+				var result = json.result;
+
+				if (status == 0) {
+					window.location.href = "list";
+				}
+			},
+			error : function() {
+				alert("系统异常，请稍后重试！");
+			}
+		});
+	}
+</script>
+</head>
+<body bgcolor="#ECEFF2" text="#000000" leftmargin="10" topmargin="10"
+	marginwidth="10" marginheight="10">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+		<tr>
+			<td>
+				<table align="center" cellpadding="0" cellspacing="0"
+					class="main_title">
+					<tr>
+						<td width="67%">
+						◆ 您当前的位置：内容管理 > 类别管理 > 
+						<a href="#"> 
+						<#if category.id== null> 
+							新增类别 
+						<#else> 
+							编辑类别 
+						</#if>
+						</a>
+						</td>
+						<td width="33%">&nbsp;</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<table align="center" cellpadding="2" cellspacing="1" class="bss">
+					<tr>
+						<th colspan="2">
+							<#if category.id== null> 
+								新增类别 
+							<#else>
+								编辑类别 
+							</#if>
+						</th>
+					</tr>
+					<form method="post" action="category!edit.do">
+						<tr>
+							<td width="25%" class="text_1">状态：</td>
+							<td width="75%" class="text_2"><select name="status"
+								id="status">
+									<option value=0<#if category.status==0>selected</#if>>上架
+									</option>
+									<option value=1<#if category.status==1>selected</#if>>下架
+									</option>
+							</select></td>
+						</tr>
+						<tr>
+							<td width="25%" class="text_1">名称：</td>
+							<td width="75%" class="text_2"><input type="text"
+								name="categoryName" id="categoryName"
+								value="${category.categoryName}" /></td>
+						</tr>
+						<tr>
+							<td colspan="2"><input type="hidden" id="id" name="id"
+								value="${category.id}" /> <input type="button" name="btnSubmit"
+								id="btnSubmit" value="确定" onclick="add();" /></td>
+						</tr>
+					</form>
+				</table>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

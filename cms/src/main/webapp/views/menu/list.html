@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="../public/css/easyui.css">
+<link rel="stylesheet" type="text/css" href="../public/css/icon.css">
+<script type="text/javascript" src="../public/js/jquery.min.js"></script>
+<script type="text/javascript" src="../public/js/adminlte.min.js"></script>
+<script type="text/javascript" src="../public/js/jquery.easyui.min.js"></script>
+<script type="text/javascript">
+	function doPost() {
+		var url = "add";
+		
+		var menuName = document.getElementById("menuName").value;
+		var linkUrl = document.getElementById("linkUrl").value;
+		var menuCode = $("#menuCode").combobox("getValue");
+		
+		$.post(url, {
+			menuName : menuName,
+			menuCode : menuCode.toString(),
+			linkUrl : linkUrl
+		}, function(json) {
+			var status = json.status;
+			window.location.href = 'list';
+		});
+	}
+</script>
+</head>
+<body>
+	<div style="margin: 10px 0;">
+		<a href="javascript:void(0)" class="easyui-linkbutton"
+			onclick="edit()">修改</a> <a href="javascript:void(0)"
+			class="easyui-linkbutton" onclick="save()">保存</a> <a
+			href="javascript:void(0)" class="easyui-linkbutton" onclick="del()">删除</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton"
+			onclick="cancel()">取消</a>
+	</div>
+	<table id="tg" class="easyui-treegrid" title="系统菜单管理"
+		style="width:700px;height:600px"
+		data-options="
+				iconCls: 'icon-ok',
+				rownumbers: true,
+				animate: true,
+				collapsible: true,
+				fitColumns: true,
+				url: '../menu/getList',
+				idField: 'menuCode',
+				treeField: 'menuName',
+				showFooter: true
+			">
+		<thead>
+			<tr>
+				<th data-options="field:'menuName',width:320,editor:'text'">菜单</th>
+				<th data-options="field:'linkUrl',width:320,editor:'text'">地址</th>
+			</tr>
+		</thead>
+	</table>
+	<br />
+	<table border="0" cellpadding="0" cellspacing="0">
+		<form id="ff" method="post">
+			<tr>
+				<td>菜单名称：</td>
+				<td><input type="text" name="menuName" id="menuName" /></td>
+			</tr>
+			<tr>
+				<td>链接地址：</td>
+				<td><input type="text" name="linkUrl" id="linkUrl" size="30" /></td>
+			</tr>
+			<tr>
+				<td>上级菜单：</td>
+				<td><select id="menuCode" class="easyui-combotree"
+					style="width: 200px;"
+					data-options="url:'getMenuTree',required:true"></select></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center"><a href="#"
+					class="easyui-linkbutton" iconCls="icon-ok" onclick="doPost()">新增</a>
+					<a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
+					onclick="javascript:$('#dlg').dialog('close')">取消</a></td>
+			</tr>
+		</form>
+	</table>
+	<script type="text/javascript">
+		function formatProgress(value) {
+			if (value) {
+				var s = '<div style="width:100%;border:1px solid #ccc">'
+						+ '<div style="width:' + value
+						+ '%;background:#cc0000;color:#fff">' + value + '%'
+						+ '</div>'
+				'</div>';
+				return s;
+			} else {
+				return '';
+			}
+		}
+		var editingId;
+		function edit() {
+			//alert(editingId);
+			if (editingId != undefined) {
+				$('#tg').treegrid('select', editingId);
+				return;
+			}
+			var row = $('#tg').treegrid('getSelected');
+			if (row) {
+
+				editingId = row.menuCode;
+				$('#tg').treegrid('beginEdit', editingId);
+			}
+		}
+		function save() {
+			if (editingId != undefined) {
+				var t = $('#tg');
+				t.treegrid('endEdit', editingId);
+				editingId = undefined;
+				var persons = 0;
+				var text = t.treegrid('getSelected');
+
+				var url = "update";
+				var id = text.id;
+				var menuName = text.menuName;
+				var linkUrl = text.linkUrl;
+				var menuCode = text.menuCode;
+				var fatherId = text._parentId;
+
+				$.post(url, {
+					menuName : menuName,
+					linkUrl : linkUrl,
+					id : id,
+					menuCode : menuCode,
+					fatherId : fatherId
+				}, function(json) {
+					window.location.href = "list";
+				});
+				
+			}
+		}
+		function cancel() {
+			if (editingId != undefined) {
+				$('#tg').treegrid('cancelEdit', editingId);
+				editingId = undefined;
+			}
+		}
+		function del() {
+			var t = $('#tg');
+			t.treegrid('endEdit', editingId);
+			var text = t.treegrid('getSelected');
+			var id = text.id;
+			
+			var url = "delete";
+
+			$.post(url, {
+				id : id
+			}, function(json) {
+				window.location.href = "list";
+			});
+		}
+	</script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+﻿html
+{
+	scrollbar-3dlight-color:#9A0000; /*- 最外左 -*/
+	scrollbar-highlight-color:#9A0000; /*- 左二 -*/
+	scrollbar-face-color:#B50000; /*- 面子 -*/
+	scrollbar-arrow-color:#fff; /*- 箭头 -*/
+	scrollbar-shadow-color:#9A0000; /*- 右二 -*/
+	scrollbar-darkshadow-color:#9A0000; /*- 右一 -*/
+	scrollbar-base-color:#9A0000; /*- 基色 -*/
+	scrollbar-track-color:#;/*- 滑道 -*/
+}
+
+body
+{
+	margin:0px;
+	text-align:center;
+	background-image:url(../../public/images/management/left_2.jpg);
+}
+
+ul,li
+{
+	margin:0;
+	padding:0;
+	list-style:none;
+}
+
+td,div,li
+{
+	font-size:12px;
+	letter-spacing:1px;
+}
+
+A { COLOR: #000000; TEXT-DECORATION: none }
+A:hover { COLOR: #428eff; TEXT-DECORATION: underline}
+
+.pq
+{
+	float:left;
+	margin-left:8px;
+}
+
+.nav_bg
+{
+	margin:auto;
+	margin-bottom:5px;
+	width:114px;
+	height:22px;
+	text-align:left;
+	padding-top:12px;
+	padding-left:40px;
+	font-weight:bold;
+	color:#666;
+	cursor:pointer;
+}
+
+.nav_li
+{
+	margin:auto;
+	width:124px;
+	height:22px;
+	text-align:left;
+	padding-top:11px;
+	padding-left:30px;
+	background-image:url(../../public/images/management/nav_line.jpg);
+}
