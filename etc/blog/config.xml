@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+
+<config>
+	<projectTitle>microservice</projectTitle>
+	<system>
+		<uploadPath>d:/data/blog/</uploadPath>
+		<picDomain>http://192.168.2.29:8080/pic/</picDomain>
+	</system>
+	<redis>
+		<ipAddress>192.168.99.100</ipAddress>
+		<password>000000</password>
+	</redis>
+	<elasticSearch>
+		<ipAddress>192.168.99.100</ipAddress>	
+		<port>9300</port>
+	</elasticSearch>
+</config>
