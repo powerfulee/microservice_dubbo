@@ -5,7 +5,6 @@ SpringMVC+dubbo+zooKeeper+redis+elasticSearch实现的微服务博客
 java1.8, dubbox2.8.4, zookeeper3.4.6, elasticSearch2.4.1, redis2.8.13
 ~~~
 
-~~~
 ### 开发环境
 ~~~
 jdk1.8
