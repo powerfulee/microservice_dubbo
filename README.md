@@ -3,9 +3,6 @@ SpringMVC+dubbo+zooKeeper+redis+elasticSearch实现的微服务博客
 ### 技术栈
 ~~~
 java1.8, dubbox2.8.4, zookeeper3.4.6, elasticSearch2.4.1, redis2.8.13
-~~~
-![image](https://github.com/powerfulee/banking/raw/master/public/images/demo/backend.jpg)
-~~~
 ### 开发环境
 ~~~
 jdk1.8
@@ -26,3 +23,9 @@ mysql v5.6
 ![image](https://github.com/powerfulee/microservice_dubbo/raw/master/public/images/provider_start_2.jpg)
 ~~~
 4、修改cms项目spring-mvc.xml第111行zookeeper地址，frontend项目spring-mvc.xml第86行zookeeper地址。将cms,frontend工程放置tomcat容器启动，完成服务发现。
+~~~
+![image](https://github.com/powerfulee/microservice_dubbo/raw/master/public/images/consumer_start_1.jpg)
+![image](https://github.com/powerfulee/microservice_dubbo/raw/master/public/images/consumer_start_2.jpg)
+~~~
+5、cms后台管理系统：http://localhost:8080/cms/login.do（帐号:admin,密码:000000）
+6、前端网站：http://localhost:8080/frontend
