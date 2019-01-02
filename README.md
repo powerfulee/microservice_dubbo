@@ -32,4 +32,3 @@ mysql v5.6
 ![image](https://github.com/powerfulee/microservice_dubbo/raw/master/public/images/consumer_start_1.jpg)
 ![image](https://github.com/powerfulee/microservice_dubbo/raw/master/public/images/consumer_start_2.jpg)
 ~~~
-5、cms后台管理系统：http://localhost:8080/cms/login.do（帐号:admin,密码:000000），前端网站：http://localhost:8080/frontend
